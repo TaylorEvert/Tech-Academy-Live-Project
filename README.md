@@ -33,45 +33,45 @@ Python, and Django. Throughout this project I have learned the important factors
 ## Database Model
   Another important factor of this project was that usage of a database. Setting up user inputs was a must as there needed to be some way to communicate to the database with the user. This was mainly done through the use of Django and built in models to create a database. This page is one of the bigger pages in terms of functionality because it is what recorded the inputs and sent them to a given table. Based off of the primary keys in this table, a more in depth details page was able to be created. By calling the primary key, a link was able to be created that would identify any specific row in the table. This is an example of what the model looked like for recording user input.
   
-  Team_Against = (('South Florida', 'South Florida'), ('Louisiana State University', 'Louisiana State University'),
-                ('Kansas State', 'Kansas State'), ('Oklahoma State', 'Oklahoma State'), ('Oklahoma', 'Oklahoma'),
-                ('West Virginia', 'West Virginia'), ('Texas Tech', 'Texas Tech'), ('Baylor', 'Baylor'),
-                ('Kansas', 'Kansas'), ('Iowa State', 'Iowa State'),
-                ('Texas Christian University', 'Texas Christian University'), ('Other', 'Other'))
+        Team_Against = (('South Florida', 'South Florida'), ('Louisiana State University', 'Louisiana State University'),
+                      ('Kansas State', 'Kansas State'), ('Oklahoma State', 'Oklahoma State'), ('Oklahoma', 'Oklahoma'),
+                      ('West Virginia', 'West Virginia'), ('Texas Tech', 'Texas Tech'), ('Baylor', 'Baylor'),
+                      ('Kansas', 'Kansas'), ('Iowa State', 'Iowa State'),
+                      ('Texas Christian University', 'Texas Christian University'), ('Other', 'Other'))
 
-  Home_Away = (('Home', 'Home'), ('Away', 'Away'), ('Other', 'Other'))
-  Game_Time = (('Morning', 'Morning'), ('Afternoon', 'Afternoon'), ('Evening', 'Evening'), ('Other', 'Other'))
-  Game_Importance = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'),
-                   ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10'))
-  Win_Loss = (('Texas', 'Texas'), ('Opponent', 'Opponent'))
+        Home_Away = (('Home', 'Home'), ('Away', 'Away'), ('Other', 'Other'))
+        Game_Time = (('Morning', 'Morning'), ('Afternoon', 'Afternoon'), ('Evening', 'Evening'), ('Other', 'Other'))
+        Game_Importance = (('0', '0'), ('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'),
+                         ('6', '6'), ('7', '7'), ('8', '8'), ('9', '9'), ('10', '10'))
+        Win_Loss = (('Texas', 'Texas'), ('Opponent', 'Opponent'))
 
 
-  class TexasGame(models.Model):
-      win_loss = models.CharField(max_length=20, choices=Win_Loss)
-      stadium = models.CharField(max_length=20, choices=Home_Away)
-      against = models.CharField(max_length=75, choices=Team_Against)
-      time_of_day = models.CharField(max_length=20, choices=Game_Time)
-      score = models.PositiveIntegerField(blank=True, null=True)
-      significance = models.CharField(max_length=20, choices=Game_Importance)
+        class TexasGame(models.Model):
+            win_loss = models.CharField(max_length=20, choices=Win_Loss)
+            stadium = models.CharField(max_length=20, choices=Home_Away)
+            against = models.CharField(max_length=75, choices=Team_Against)
+            time_of_day = models.CharField(max_length=20, choices=Game_Time)
+            score = models.PositiveIntegerField(blank=True, null=True)
+            significance = models.CharField(max_length=20, choices=Game_Importance)
       
 ## Functions
   In order for the application to work, a must is back end functions that are doing the work which they are being called on for. Some of this work included creating the form for user input, a function to show a list of the recorded inputs, and a function for accessing specific entries through their primary key from the database. A request would be sent to any of the given functions that are called upon, and based off of the called function a certain result would be returned and rendered. This was done through the use of a url file. This file was basically the middle-man between the front end and the back end functions. Here is an example of what the functions looked like for viewing all entries, and for creating new ones. 
   
-  def index(request):
-    get_games = TexasGame.TexasGames.all()
-    context = {'games': get_games}
-    return render(request, 'TexasScore/TexasScore_index.html', context)
+        def index(request):
+          get_games = TexasGame.TexasGames.all()
+          context = {'games': get_games}
+          return render(request, 'TexasScore/TexasScore_index.html', context)
 
 
-  def create_game(request):
-      form = TexasForm(request.POST or None)
-      if form.is_valid():
-          form.save()
-          return redirect('giveGames')
-      else:
-          print(form.errors)
-          form = TexasForm()
-      return render(request, 'TexasScore/TexasScore_create.html', {'form': form})
+        def create_game(request):
+            form = TexasForm(request.POST or None)
+            if form.is_valid():
+                form.save()
+                return redirect('giveGames')
+            else:
+                print(form.errors)
+                form = TexasForm()
+            return render(request, 'TexasScore/TexasScore_create.html', {'form': form})
 
 The function labeled index was responsible for viewing all entries in a given format. This format is applied after the function returns the request back to the caller. The format is labled on the index html page. The create_game function was responsible for creating the form for user input then saving it. After the entry is saved, the user is returned to the orginal page seen for creating the entry in the first place. This way multiple entries could be made without the user having to self direct back to form page. 
 
